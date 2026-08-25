@@ -79,6 +79,30 @@ describe('IntegTest runIntegTests', () => {
     }));
   });
 
+  test('golden snapshot manifest records the actual enableLookups value, not a hardcoded one', async () => {
+    // GIVEN: xxxxx.test-with-snapshot.js has no `pragma:enable-lookups`, so lookups are disabled
+    const saveIntegManifestMock = jest.spyOn(Manifest, 'saveIntegManifest').mockImplementation();
+    const integTest = new IntegTestRunner({
+      cdk: cdkMock.cdk,
+      region: 'eu-west-1',
+      test: new IntegTest({
+        fileName: 'test/test-data/xxxxx.test-with-snapshot.js',
+        discoveryRoot: 'test/test-data',
+      }),
+      TESTING_usingMocks: true,
+      TESTING_useComparisonOutputDirectory: true,
+    });
+
+    // WHEN
+    await integTest.runIntegTestCase({});
+
+    // THEN
+    expect(saveIntegManifestMock).toHaveBeenCalledWith(
+      expect.objectContaining({ enableLookups: false }),
+      expect.any(String),
+    );
+  });
+
   test('no snapshot', async () => {
     // WHEN
     const integTest = new IntegTestRunner({

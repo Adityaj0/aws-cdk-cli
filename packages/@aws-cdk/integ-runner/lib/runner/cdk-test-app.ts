@@ -596,7 +596,6 @@ export class CdkTestApp {
     // update workflow. Save any legacyContext as well so that it can be read
     // the next time
     const actualTestSuite = this.testSuite;
-    actualTestSuite.enableLookups = true;
 
     if (actualTestSuite instanceof LegacyIntegTestSuite) {
       actualTestSuite.saveManifest(this.outputDirectory, this.legacyContext);
